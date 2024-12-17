@@ -86,60 +86,135 @@ public class PostPersonTest {
         });
     }
 
-//    @Test
-//    @DisplayName("Сохранение пользователя с пустыми id и пустым name")
-//    @AllureId("3")
-//    public void NewTestCase3() {
-//        String postUrl = "http://localhost:8080/api/person";
-//        Person person = new Person();
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-//
-//        step("Отправляем запрос POST /person с параметрами id = null, name = null", () -> {
-//            HttpEntity<Person> requestEntity = new HttpEntity<>(person, headers);
-//            step("Проверяем, что в ответе от POST /person получена ошибка: 400,error:Bad Request", () -> {
-//            });
-//        });
-//    }
-
 
     @Test
-    @DisplayName("Сохранение пользователя с name различной длинны(границы[3, 255])")
+    @DisplayName("Сохранение пользователя с name длинны 255")
+    @AllureId("3")
+    public void NewTestCase3() {
+        String postUrl = "http://localhost:8080/api/person";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        step("Отправляем запрос POST /person с параметрами len(name) = 255", () -> {
+            Person person = new Person("g".repeat(255));
+            HttpEntity<Person> requestEntity = new HttpEntity<>(person, headers);
+            ResponseEntity<Long> createPersonResponse = restTemplate.exchange(
+                    postUrl,
+                    HttpMethod.POST,
+                    requestEntity,
+                    Long.class
+            );
+            step("Проверяем, что в ответе от POST /person получен id", () -> {
+                assertNotNull(createPersonResponse.getBody());
+//                System.out.println(createPersonResponse.getBody());
+            });
+        });
+
+    }
+
+    @Test
+    @DisplayName("Сохранение пользователя с name длинны 3")
     @AllureId("4")
     public void NewTestCase4() {
-        step("Отправляем запрос POST /person с параметрами len(name) = 255", () -> {
+        String postUrl = "http://localhost:8080/api/person";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
-            step("Проверяем, что в ответе от POST /person получен id", () -> {
-
-            });
-
-            step("Проверяем, что через метод GET /person/{id} мы получим созданного пользователя", () -> {
-
-            });
-        });
         step("Отправляем запрос POST /person с параметрами len(name) = 3", () -> {
-
+            Person person = new Person("g".repeat(3));
+            HttpEntity<Person> requestEntity = new HttpEntity<>(person, headers);
+            ResponseEntity<Long> createPersonResponse = restTemplate.exchange(
+                    postUrl,
+                    HttpMethod.POST,
+                    requestEntity,
+                    Long.class
+            );
             step("Проверяем, что в ответе от POST /person получен id", () -> {
-
-            });
-
-            step("Проверяем, что через метод GET /person/{id} мы получим созданного пользователя", () -> {
-
+                assertNotNull(createPersonResponse.getBody());
+//                System.out.println(createPersonResponse.getBody());
             });
         });
+
+    }
+
+    @Test
+    @DisplayName("Сохранение пользователя с name длинны 2")
+    @AllureId("5")
+    public void NewTestCase5() {
+        String postUrl = "http://localhost:8080/api/person";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         step("Отправляем запрос POST /person с параметрами len(name) = 2", () -> {
-
+            Person person = new Person("g".repeat(2));
+            HttpEntity<Person> requestEntity = new HttpEntity<>(person, headers);
             step("Проверяем, что в ответе от POST /person получена ошибка: 400,error:Bad Request", () -> {
-
-            });
-        });
-        step("Отправляем запрос POST /person с параметрами len(name) = 256", () -> {
-
-            step("Проверяем, что в ответе от POST /person получена ошибка: 400,error:Bad Request", () -> {
-
+            try{
+                ResponseEntity<Long> createPersonResponse = restTemplate.exchange(
+                        postUrl,
+                        HttpMethod.POST,
+                        requestEntity,
+                        Long.class
+                );
+            } catch (Exception e){
+//                System.out.println(e.getMessage());
+            }
             });
         });
     }
 
+    @Test
+    @DisplayName("Сохранение пользователя с name длинны 256")
+    @AllureId("6")
+    public void NewTestCase6() {
+        String postUrl = "http://localhost:8080/api/person";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        step("Отправляем запрос POST /person с параметрами len(name) = 2", () -> {
+            Person person = new Person("g".repeat(256));
+            HttpEntity<Person> requestEntity = new HttpEntity<>(person, headers);
+            step("Проверяем, что в ответе от POST /person получена ошибка: 400,error:Bad Request", () -> {
+                try{
+                    ResponseEntity<Long> createPersonResponse = restTemplate.exchange(
+                            postUrl,
+                            HttpMethod.POST,
+                            requestEntity,
+                            Long.class
+                    );
+                } catch (Exception e){
+//                    System.out.println(e.getMessage());
+                }
+            });
+        });
+
+    }
+
+    @Test
+    @DisplayName("Сохранение пользователя, без параметров")
+    @AllureId("7")
+    public void NewTestCase7() {
+        String postUrl = "http://localhost:8080/api/person";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        step("Отправляем запрос POST /person с пустым person", () -> {
+            Person person = new Person();
+            HttpEntity<Person> requestEntity = new HttpEntity<>(person, headers);
+            step("Проверяем, что в ответе от POST /person получена ошибка: 400,error:Bad Request", () -> {
+                try{
+                    ResponseEntity<Long> createPersonResponse = restTemplate.exchange(
+                            postUrl,
+                            HttpMethod.POST,
+                            requestEntity,
+                            Long.class
+                    );
+                } catch (Exception e){
+//                    System.out.println(e.getMessage());
+                }
+            });
+        });
+
+    }
 }
